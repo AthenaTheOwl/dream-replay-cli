@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dreamreplay/schemas/dream.schema.json",
+  "title": "DreamReplay weekly index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "week",
+    "run_date",
+    "inputs",
+    "candidates",
+    "totals"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "week": {
+      "type": "string",
+      "pattern": "^\\d{4}-W\\d{2}$"
+    },
+    "run_date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["traces", "spec_ledger", "decision_ledger"],
+      "properties": {
+        "traces": { "$ref": "#/$defs/input_ref" },
+        "spec_ledger": { "$ref": "#/$defs/input_ref" },
+        "decision_ledger": { "$ref": "#/$defs/input_ref" }
+      }
+    },
+    "candidates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill", "memory", "test", "spec_amendment"],
+      "properties": {
+        "skill": { "$ref": "#/$defs/candidate_list" },
+        "memory": { "$ref": "#/$defs/candidate_list" },
+        "test": { "$ref": "#/$defs/candidate_list" },
+        "spec_amendment": { "$ref": "#/$defs/candidate_list" }
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill", "memory", "test", "spec_amendment"],
+      "properties": {
+        "skill": { "type": "integer", "minimum": 0 },
+        "memory": { "type": "integer", "minimum": 0 },
+        "test": { "type": "integer", "minimum": 0 },
+        "spec_amendment": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "$defs": {
+    "input_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "hash"],
+      "properties": {
+        "path": { "type": "string" },
+        "hash": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$|^sha256:empty$"
+        }
+      }
+    },
+    "candidate_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slug", "evidence_count", "notes", "file"],
+        "properties": {
+          "slug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "evidence_count": { "type": "integer", "minimum": 1 },
+          "notes": { "type": "string" },
+          "file": { "type": "string" }
+        }
+      }
+    }
+  }
+}

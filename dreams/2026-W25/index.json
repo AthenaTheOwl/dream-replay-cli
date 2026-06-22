@@ -1,0 +1,83 @@
+{
+  "candidates": {
+    "memory": [
+      {
+        "evidence_count": 4,
+        "file": "candidate_memory.md",
+        "notes": "value appears in 4 distinct events",
+        "slug": "ledger-row-write"
+      },
+      {
+        "evidence_count": 3,
+        "file": "candidate_memory.md",
+        "notes": "value appears in 3 distinct events",
+        "slug": "audit-log-write-ok"
+      },
+      {
+        "evidence_count": 3,
+        "file": "candidate_memory.md",
+        "notes": "value appears in 3 distinct events",
+        "slug": "calibration-pass-starting"
+      }
+    ],
+    "skill": [
+      {
+        "evidence_count": 4,
+        "file": "candidate_skills.md",
+        "notes": "kind sequence repeated by 3 distinct actor(s)",
+        "slug": "thought-then-action"
+      },
+      {
+        "evidence_count": 3,
+        "file": "candidate_skills.md",
+        "notes": "kind sequence repeated by 2 distinct actor(s)",
+        "slug": "action-then-observation"
+      }
+    ],
+    "spec_amendment": [
+      {
+        "evidence_count": 2,
+        "file": "candidate_spec_amendments.md",
+        "notes": "ID referenced in 2 event(s); absent from spec ledger",
+        "slug": "add-r-drm-999"
+      }
+    ],
+    "test": [
+      {
+        "evidence_count": 1,
+        "file": "candidate_tests.md",
+        "notes": "failure event from actor `agent-delta`",
+        "slug": "failure-agent-delta-missing-r-drm-999-implementation"
+      },
+      {
+        "evidence_count": 1,
+        "file": "candidate_tests.md",
+        "notes": "failure event from actor `agent-gamma`",
+        "slug": "failure-agent-gamma-timeout-on-audit-log-write"
+      }
+    ]
+  },
+  "inputs": {
+    "decision_ledger": {
+      "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "tests/fixtures/portfolio_sample/decisions"
+    },
+    "spec_ledger": {
+      "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "tests/fixtures/portfolio_sample/specs"
+    },
+    "traces": {
+      "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "tests/fixtures/portfolio_sample/traces"
+    }
+  },
+  "run_date": "2026-06-22",
+  "schema_version": "1.0.0",
+  "totals": {
+    "memory": 3,
+    "skill": 2,
+    "spec_amendment": 1,
+    "test": 2
+  },
+  "week": "2026-W25"
+}
