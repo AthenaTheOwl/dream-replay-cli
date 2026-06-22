@@ -5,11 +5,17 @@ Implements R-DRM-002 (input contract) and R-DRM-011 (`dreamreplay run`).
 
 from __future__ import annotations
 
+import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 import click
+from jsonschema import Draft202012Validator
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SCHEMA_PATH = REPO_ROOT / "schemas" / "dream.schema.json"
+DREAMS_DIR = REPO_ROOT / "dreams"
 
 from dreamreplay.ingest.decision_ledger import parse_decision_ledger
 from dreamreplay.ingest.spec_ledger import parse_spec_ledger
@@ -68,6 +74,44 @@ def run_pipeline(
 @click.version_option(package_name="dreamreplay")
 def main() -> None:
     """DreamReplay CLI — propose candidates, never promote."""
+
+
+@main.command("validate")
+def cmd_validate() -> None:
+    """Validate the committed dream corpus against dream.schema.json.
+
+    No args. Reads only the committed `dreams/*/index.json` files and
+    checks each against the schema. Writes nothing, needs no network or
+    secrets. Exits 0 when every committed index validates clean.
+    """
+    try:
+        schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        click.echo(f"validate: missing schema {SCHEMA_PATH}", err=True)
+        sys.exit(1)
+    validator = Draft202012Validator(schema)
+
+    paths = sorted(DREAMS_DIR.glob("*/index.json"))
+    if not paths:
+        click.echo("validate: no committed dream corpus to check")
+        return
+
+    errors: list[str] = []
+    for path in paths:
+        try:
+            instance = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            errors.append(f"{path}: invalid JSON ({exc.msg})")
+            continue
+        for err in validator.iter_errors(instance):
+            loc = ".".join(str(p) for p in err.absolute_path)
+            errors.append(f"{path}: {loc}: {err.message}")
+
+    if errors:
+        for line in errors:
+            click.echo(line, err=True)
+        sys.exit(1)
+    click.echo(f"validate: {len(paths)} dream index file(s) clean")
 
 
 @main.command("run")
