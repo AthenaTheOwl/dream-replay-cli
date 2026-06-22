@@ -1,0 +1,14 @@
+{"timestamp": "2026-06-15T09:00:00Z", "kind": "thought", "actor": "agent-alpha", "payload": {"note": "calibration-pass starting"}}
+{"timestamp": "2026-06-15T09:00:05Z", "kind": "action", "actor": "agent-alpha", "payload": {"target": "ledger-row write"}}
+{"timestamp": "2026-06-15T09:00:10Z", "kind": "observation", "actor": "agent-alpha", "payload": {"result": "audit-log-write ok"}}
+{"timestamp": "2026-06-15T09:00:15Z", "kind": "thought", "actor": "agent-alpha", "payload": {"note": "calibration-pass starting"}}
+{"timestamp": "2026-06-15T09:00:20Z", "kind": "action", "actor": "agent-alpha", "payload": {"target": "ledger-row write"}}
+{"timestamp": "2026-06-15T09:00:25Z", "kind": "observation", "actor": "agent-alpha", "payload": {"result": "audit-log-write ok"}}
+{"timestamp": "2026-06-16T10:00:00Z", "kind": "thought", "actor": "agent-beta", "payload": {"note": "calibration-pass starting", "ref": "R-DRM-999"}}
+{"timestamp": "2026-06-16T10:00:05Z", "kind": "action", "actor": "agent-beta", "payload": {"target": "ledger-row write"}}
+{"timestamp": "2026-06-16T10:00:10Z", "kind": "observation", "actor": "agent-beta", "payload": {"result": "audit-log-write ok"}}
+{"timestamp": "2026-06-17T11:00:00Z", "kind": "thought", "actor": "agent-gamma", "payload": {"note": "starting up"}}
+{"timestamp": "2026-06-17T11:00:05Z", "kind": "action", "actor": "agent-gamma", "payload": {"target": "ledger-row write"}}
+{"timestamp": "2026-06-17T11:00:10Z", "kind": "failure", "actor": "agent-gamma", "payload": {"error": "timeout on audit-log-write"}}
+{"timestamp": "2026-06-18T12:00:00Z", "kind": "thought", "actor": "agent-delta", "payload": {"note": "retry attempt"}}
+{"timestamp": "2026-06-18T12:00:05Z", "kind": "failure", "actor": "agent-delta", "payload": {"error": "missing R-DRM-999 implementation"}}
