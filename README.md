@@ -68,6 +68,24 @@ The headline is the point: the traces show agents acting on a
 requirement (`R-DRM-999`) the spec ledger never defined, so a reviewer
 sees the drift before promoting anything.
 
+## live demo
+
+an interactive streamlit page mirrors the `show` verb: it reads the committed
+`dreams/*/index.json` and renders the week's candidates ranked by evidence, the
+spec-drift headline, and per-kind totals. no network, no secrets.
+
+<!-- live url: https://<your-app>.streamlit.app -->
+
+run locally:
+
+```bash
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+deploy on streamlit community cloud: new app -> repo `AthenaTheOwl/dream-replay-cli`,
+branch `main`, main file `streamlit_app.py`.
+
 ## how to run a fresh week
 
 ```bash
