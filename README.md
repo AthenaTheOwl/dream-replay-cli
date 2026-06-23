@@ -32,17 +32,8 @@ One output per run:
 
 ## Status
 
-v0 scaffold. No implementation yet — only the spec ledger, the AGENTS
-contract, and the file layout below. First runnable code lands in
-spec 0002.
 
-- [x] Repo scaffold + LICENSE + AGENTS.md
-- [x] Spec 0001 (foundation) — requirements, design, tasks, acceptance
-- [x] First-PR plan in `docs/first-pr.md`
-- [ ] Schema for `dream.schema.json`
-- [ ] Reference adapter (trace-to-eval-harness format)
-- [ ] Dry-run on a portfolio fixture
-- [ ] First published quarterly corpus
+v0.1 shipped and runs end to end. The entry command `python -m dreamreplay run --traces <dir> --spec-ledger <dir> --decision-ledger <dir> --week 2026-W26 --run-date 2026-06-26 --out <dir>` runs. See `specs/0002-design/` for the v0.1 scope and `STATUS.md` (where present) for the current state and next-feature queue.
 
 ## How to run
 
