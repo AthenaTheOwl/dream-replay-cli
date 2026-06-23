@@ -114,6 +114,111 @@ def cmd_validate() -> None:
     click.echo(f"validate: {len(paths)} dream index file(s) clean")
 
 
+_KIND_LABELS = {
+    "skill": "skill",
+    "memory": "memory update",
+    "spec_amendment": "spec amendment",
+    "test": "test",
+}
+_KIND_ORDER = ["skill", "memory", "spec_amendment", "test"]
+
+
+def _latest_index() -> Path | None:
+    paths = sorted(DREAMS_DIR.glob("*/index.json"))
+    return paths[-1] if paths else None
+
+
+def render_show(index_path: Path) -> str:
+    """Render the human-readable review summary for one committed run.
+
+    Reads a single ``dreams/YYYY-WNN/index.json`` and returns the ranked,
+    one-screen digest a reviewer reads before opening the per-kind files.
+    """
+    data = json.loads(index_path.read_text(encoding="utf-8"))
+    candidates = data.get("candidates", {})
+    totals = data.get("totals", {})
+    total = sum(totals.values())
+
+    lines: list[str] = []
+    week = data.get("week", "?")
+    run_date = data.get("run_date", "?")
+    lines.append(f"dream review -- {week}  (run {run_date})")
+    lines.append(f"folder: {index_path.parent.as_posix()}")
+    lines.append("")
+    lines.append(
+        f"{total} candidate(s) await human review. Promotion is gated: "
+        "nothing here ships until a person says yes."
+    )
+    lines.append("")
+
+    # Single flat ranking across all kinds, by evidence count — the
+    # "what should I look at first" view.
+    ranked: list[tuple[int, str, str, str]] = []
+    for kind, items in candidates.items():
+        for item in items:
+            ranked.append(
+                (
+                    int(item.get("evidence_count", 0)),
+                    _KIND_LABELS.get(kind, kind),
+                    item.get("slug", "?"),
+                    item.get("notes", ""),
+                )
+            )
+    ranked.sort(key=lambda r: (-r[0], r[1], r[2]))
+
+    lines.append("ranked by evidence (strongest first):")
+    lines.append("")
+    lines.append(f"  {'#':>2}  {'evid':>4}  {'kind':<14}  candidate")
+    lines.append(f"  {'--':>2}  {'----':>4}  {'-' * 14}  {'-' * 30}")
+    for i, (evid, label, slug, _notes) in enumerate(ranked, start=1):
+        lines.append(f"  {i:>2}  {evid:>4}  {label:<14}  {slug}")
+    lines.append("")
+
+    # The headline finding: spec amendments are references to requirement
+    # IDs that the traces use but the spec ledger never defined — drift
+    # between what agents act on and what the spec says exists.
+    amendments = candidates.get("spec_amendment", [])
+    if amendments:
+        lines.append("headline -- spec drift (referenced but undefined):")
+        for item in sorted(
+            amendments,
+            key=lambda c: -int(c.get("evidence_count", 0)),
+        ):
+            slug = item.get("slug", "?")
+            evid = item.get("evidence_count", 0)
+            req_id = slug.replace("add-", "").upper().replace("-", "-")
+            lines.append(
+                f"  - {slug}: {req_id} referenced in {evid} trace event(s) "
+                "but absent from the spec ledger"
+            )
+        lines.append("")
+
+    lines.append("per-kind totals:")
+    for kind in _KIND_ORDER:
+        if kind in totals:
+            lines.append(f"  - {_KIND_LABELS.get(kind, kind)}: {totals[kind]}")
+    lines.append("")
+    lines.append(
+        f"open {index_path.parent.as_posix()}/ to read the full proposals."
+    )
+    return "\n".join(lines)
+
+
+@main.command("show")
+def cmd_show() -> None:
+    """Print a ranked, human-readable digest of the committed dream run.
+
+    No args. Reads only the latest committed ``dreams/*/index.json`` and
+    prints the candidates ranked by evidence, the spec-drift headline, and
+    per-kind totals. Writes nothing, needs no network or secrets. Exits 0.
+    """
+    index_path = _latest_index()
+    if index_path is None:
+        click.echo("show: no committed dream run to display")
+        return
+    click.echo(render_show(index_path))
+
+
 @main.command("run")
 @click.option(
     "--traces",

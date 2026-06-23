@@ -1,0 +1,9 @@
+# Normalize all text to LF so the dogfood byte-equality test
+# (test_pipeline_matches_committed_dogfood_run) holds on Windows checkouts.
+# The pipeline writes LF; without this, a Windows clone rewrites the
+# committed dreams/*.md to CRLF and the byte comparison fails.
+* text=auto eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf
+*.py text eol=lf

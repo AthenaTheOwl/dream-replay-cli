@@ -33,23 +33,56 @@ One output per run:
 ## Status
 
 
-v0.1 shipped and runs end to end. The entry command `python -m dreamreplay run --traces <dir> --spec-ledger <dir> --decision-ledger <dir> --week 2026-W26 --run-date 2026-06-26 --out <dir>` runs. See `specs/0002-design/` for the v0.1 scope and `STATUS.md` (where present) for the current state and next-feature queue.
+v0.1 shipped and runs end to end. Three verbs work today: `show` (no-arg
+ranked digest of the committed corpus), `validate` (no-arg schema check of
+the committed corpus), and `run` (synthesize a fresh `dreams/YYYY-WNN/`
+from your own traces). See the `try it` section below and `STATUS.md` for
+the current state and next-feature queue.
 
-## How to run
+## try it
 
-Placeholder. The runnable CLI lands in spec 0002. The intended shape:
+No setup, no args. Reads the committed `dreams/2026-W25/` corpus and
+prints the week's candidates ranked by how much trace evidence backs
+each one:
+
+```bash
+uv run python -m dream_replay_cli show
+```
+
+```
+dream review -- 2026-W25  (run 2026-06-22)
+
+8 candidate(s) await human review. Promotion is gated.
+
+ranked by evidence (strongest first):
+   #  evid  kind            candidate
+   1     4  memory update   ledger-row-write
+   2     4  skill           thought-then-action
+   6     2  spec amendment  add-r-drm-999
+
+headline -- spec drift (referenced but undefined):
+  - add-r-drm-999: R-DRM-999 referenced in 2 trace event(s) but absent from the spec ledger
+```
+
+The headline is the point: the traces show agents acting on a
+requirement (`R-DRM-999`) the spec ledger never defined, so a reviewer
+sees the drift before promoting anything.
+
+## how to run a fresh week
 
 ```bash
 uv sync
-uv run dreamreplay run \
-    --traces ./fixtures/traces \
-    --spec-ledger ./fixtures/specs \
-    --decision-ledger ./fixtures/decisions \
+uv run python -m dream_replay_cli run \
+    --traces ./tests/fixtures/portfolio_sample/traces \
+    --spec-ledger ./tests/fixtures/portfolio_sample/specs \
+    --decision-ledger ./tests/fixtures/portfolio_sample/decisions \
+    --week 2026-W26 \
+    --run-date 2026-06-26 \
     --out ./dreams/2026-W26
 ```
 
-Until spec 0002 lands, the only thing in this repo that runs is
-`python -c "print('scaffold')"`.
+`run` requires `--week` and `--run-date`; `show` and `validate` take no
+args and read only the committed corpus.
 
 ## Layout
 
