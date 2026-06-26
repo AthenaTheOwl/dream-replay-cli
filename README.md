@@ -1,43 +1,27 @@
-# DreamReplay — Open-Source Offline-Cognition CLI
+# dream-replay-cli
 
-An open-source CLI that ingests a trace log plus a spec ledger plus a
-decision ledger and emits a weekly `dreams/YYYY-WNN/` directory of
-candidate skills, candidate memory updates, candidate tests, and candidate
-spec amendments. Promotion is human-gated. Nothing in `dreams/` ships
-without a person opening the file and saying yes.
+Eight candidate skills, memory edits, tests, and spec amendments come out of one
+week's traces. None of them ship. They sit in `dreams/2026-W25/` until a person
+opens the file and says yes. The CLI proposes; the gate is a human.
 
-## What this is
+## What it does
 
-Every agent framework in 2026 ships a runtime — LangGraph, CrewAI,
-Bedrock Agents, OpenAI Agents SDK. None ship a Dream / Replay plane: a
-deliberate offline pass over the week's traces that proposes promotions
-to the long-running system instead of mutating it in place.
+Every agent framework in 2026 ships a runtime — LangGraph, CrewAI, Bedrock Agents,
+the OpenAI Agents SDK. None of them ship a replay plane: a deliberate offline pass
+over the week's traces that proposes changes to the long-running system instead of
+mutating it in place. An agent that learns by overwriting itself mid-flight has no
+audit trail and no veto. This is the veto.
 
-DreamReplay is that plane, extracted from the CDCP operating model the
-rest of the portfolio runs on. It is a CLI, not a service. It writes
-files, not database rows. The output is review-able by a human in under
-thirty minutes a week.
+dream-replay-cli reads three things — a trace log, a spec ledger, a decision
+ledger — and writes one weekly `dreams/YYYY-WNN/` directory: candidate skills,
+candidate memory updates, candidate tests, candidate spec amendments, and an
+`index.json` so the promotion gate can iterate. It is a CLI, not a service. It
+writes files, not database rows. A reviewer reads the week in under thirty minutes.
 
-Three inputs:
-
-- A trace log directory (any format with an adapter)
-- A spec ledger (`specs/NNNN-*/requirements.md`-shaped Markdown)
-- A decision ledger (`decisions/DEC-NNN-*.md`-shaped Markdown)
-
-One output per run:
-
-- `dreams/YYYY-WNN/` with `candidate_skills.md`, `candidate_memory.md`,
-  `candidate_tests.md`, `candidate_spec_amendments.md`, and a
-  machine-readable `index.json` so the promotion gate can iterate.
-
-## Status
-
-
-v0.1 shipped and runs end to end. Three verbs work today: `show` (no-arg
-ranked digest of the committed corpus), `validate` (no-arg schema check of
-the committed corpus), and `run` (synthesize a fresh `dreams/YYYY-WNN/`
-from your own traces). See the `try it` section below and `STATUS.md` for
-the current state and next-feature queue.
+The interesting output isn't the candidates that pass. It's the drift the traces
+expose: agents acting on a requirement (`R-DRM-999`) the spec ledger never defined.
+The replay pass catches the gap between what the agents did and what anyone wrote
+down, and shows it to a human before anything gets promoted.
 
 ## try it
 
@@ -102,68 +86,32 @@ uv run python -m dream_replay_cli run \
 `run` requires `--week` and `--run-date`; `show` and `validate` take no
 args and read only the committed corpus.
 
-## Layout
+## How it connects
 
-```
-dream-replay-cli/
-  README.md
-  LICENSE
-  AGENTS.md
-  .gitignore
-  specs/
-    0001-foundation/
-      requirements.md
-      design.md
-      tasks.md
-      acceptance.md
-  docs/
-    first-pr.md
-```
+This is the replay plane pulled out of the CDCP operating model the rest of the
+portfolio runs on. Two ledgers feed it and nothing it produces is automatic:
 
-Planned but not yet present (lands across spec 0002 + 0003):
+- The spec ledger (`specs/NNNN-*/requirements.md`-shaped) and the decision ledger
+  (`decisions/DEC-NNN-*.md`-shaped) are the same artifact types every active repo
+  carries. dream-replay-cli reads them as inputs, not as decoration.
+- The trace log arrives through an adapter, so the traces live wherever you already
+  keep them. This repo never becomes the store.
+- Promotion is a person reading `dreams/YYYY-WNN/` and merging by hand. There is no
+  confidence score standing in for the human, and no hosted plane doing it for you.
 
-```
-  cli/
-    main.py
-  src/
-    ingest/
-      trace_loader.py
-      spec_ledger.py
-      decision_ledger.py
-    synthesize/
-      candidate_skills.py
-      candidate_memory.py
-      candidate_tests.py
-    render/
-      dreams_dir.py
-  schemas/
-    dream.schema.json
-  decisions/
-    DEC-001-promotion-gate-rules.md
-  dreams/
-    .gitkeep
-  tests/
-    fixtures/
-  pyproject.toml
+## Run / layout
+
+```bash
+uv sync
+uv run python -m dream_replay_cli validate   # schema-check the committed corpus
 ```
 
-## Who this is for
-
-- AI platform teams who already have traces but no review cadence over
-  them.
-- Individual builders running multi-agent portfolios. The author runs
-  one; the CLI is dogfooded on it before any external user touches it.
-- Researchers studying continual-learning patterns for agents who want
-  a checked-in corpus instead of a black-box service.
-
-## What this is not
-
-- Not a hosted service. The CLI runs on your machine, against your
-  files. There is no DreamReplay cloud.
-- Not auto-promotion. The CLI proposes; a human reads and merges. The
-  gate is a person, not a confidence score.
-- Not a trace store. Traces live wherever you already keep them. This
-  repo reads them through an adapter.
+```
+dream_replay_cli/   cli, ledger, score, report — the working package
+dreams/2026-W25/     the committed corpus show + validate read
+specs/  decisions/   the two ledgers that feed run
+schemas/  tests/  docs/
+```
 
 ## License
 
