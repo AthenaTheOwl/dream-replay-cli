@@ -28,8 +28,13 @@ def test_load_events_parses_fixture(traces_dir: Path) -> None:
 
 def test_load_events_rejects_bad_json(tmp_path: Path) -> None:
     bad = tmp_path / "bad.jsonl"
-    bad.write_text("{not json}\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="invalid JSON"):
+    # valid record first so the failure is on line 2, pinning the
+    # 1-based line number in the error against off-by-one drift
+    bad.write_text(
+        '{"timestamp": "t", "kind": "k", "actor": "a"}\n{not json}\n',
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match=r"bad\.jsonl:2: invalid JSON"):
         load_events(tmp_path)
 
 
