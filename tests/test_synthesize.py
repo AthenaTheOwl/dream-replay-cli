@@ -6,6 +6,7 @@ from pathlib import Path
 
 from dreamreplay.ingest.spec_ledger import parse_spec_ledger
 from dreamreplay.ingest.trace_loader import load_events
+from dreamreplay.models import InternalEvent
 from dreamreplay.synthesize.candidate_memory import synthesize_memory
 from dreamreplay.synthesize.candidate_skills import synthesize_skills
 from dreamreplay.synthesize.candidate_spec_amendments import (
@@ -22,6 +23,30 @@ def test_skills_finds_repeated_bigrams(traces_dir: Path) -> None:
     # the first candidate has the higher count, confirming
     # (-evidence_count, slug) sorting
     assert skills[0].evidence_count >= skills[1].evidence_count
+
+
+def test_skills_bigram_count_threshold_boundary() -> None:
+    # actor-hi emits x,y three times -> ("x","y") count 3 (at threshold).
+    # actor-lo emits p,q twice -> ("p","q") count 2 (below threshold).
+    # Pins MIN_BIGRAM_COUNT == 3: dropping it to 2 would emit p-then-q.
+    def ev(actor: str, kind: str) -> InternalEvent:
+        return InternalEvent(timestamp="t", kind=kind, actor=actor)
+
+    events = [
+        ev("actor-hi", "x"),
+        ev("actor-hi", "y"),
+        ev("actor-hi", "x"),
+        ev("actor-hi", "y"),
+        ev("actor-hi", "x"),
+        ev("actor-hi", "y"),
+        ev("actor-lo", "p"),
+        ev("actor-lo", "q"),
+        ev("actor-lo", "p"),
+        ev("actor-lo", "q"),
+    ]
+    skills = synthesize_skills(events)
+    assert [s.slug for s in skills] == ["x-then-y"]
+    assert skills[0].evidence_count == 3
 
 
 def test_memory_finds_repeated_values(traces_dir: Path) -> None:
