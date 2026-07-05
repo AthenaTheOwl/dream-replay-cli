@@ -60,24 +60,3 @@ the factory reads.
   candidate drift inspection.
 - Regret-note workflow: when a promoted candidate is walked back, the
   CLI helps draft `decisions/DEC-NNN-regret-*.md`.
-
-- Resolve factory defect: missing PRODUCT_BRIEF.md,SYSTEM_MAP.md
-- Resolve factory defect: missing data/ledger/*.jsonl
-- Resolve factory defect: METHODOLOGY.md missing revisit section
-- Resolve factory defect: PRODUCT_BRIEF.md is required for active repos
-- Resolve factory defect: SYSTEM_MAP.md is required for active repos
-- Resolve factory defect: expected file 'PRODUCT_BRIEF.md' is missing
-- Resolve factory defect: expected file 'SYSTEM_MAP.md' is missing
-- Resolve factory defect: expected file 'specs/0002-design/requirements.md' is missing
-- Resolve factory defect: expected file 'specs/0002-design/design.md' is missing
-- Resolve factory defect: expected file 'specs/0002-design/tasks.md' is missing
-- Resolve factory defect: expected file 'specs/0002-design/acceptance.md' is missing
-- Resolve factory defect: expected file 'dream_replay_cli/cli.py' is missing
-- Resolve factory defect: expected file 'dream_replay_cli/score.py' is missing
-- Resolve factory defect: expected file 'dream_replay_cli/ledger.py' is missing
-- Resolve factory defect: expected glob 'data/ledger/*.jsonl' matched no files
-- Resolve factory defect: module 'cli' declares source 'dream_replay_cli/cli.py', but it is missing
-- Resolve factory defect: module 'score' declares source 'dream_replay_cli/score.py', but it is missing
-- Resolve factory defect: module 'ledger' declares source 'dream_replay_cli/ledger.py', but it is missing
-- Resolve factory defect: module 'report' declares source 'dream_replay_cli/report.py', but it is missing
-- Resolve factory defect: claude_code review requested patch; inspect defect log
