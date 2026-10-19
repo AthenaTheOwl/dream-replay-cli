@@ -88,6 +88,10 @@ args and read only the committed corpus.
 
 ## How it connects
 
+The [evidence-bounded replay protocol](docs/evidence-bounded-dreams.md) describes
+how to review a candidate against raw traces, test a counterexample, and compare
+retries and time alongside token use before promoting a memory or skill change.
+
 This is the replay plane pulled out of the CDCP operating model the rest of the
 portfolio runs on. Two ledgers feed it and nothing it produces is automatic:
 
