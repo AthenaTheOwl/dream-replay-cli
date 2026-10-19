@@ -30,8 +30,7 @@ candidate to `review-queue`; no file in this example authorizes memory writes,
 automatic skill installation or external posting. After a prompt, source or tool
 change, preserve the old candidate and assess whether its checks still apply.
 
-This procedure applies the evidence and applicability ideas in
-[AI Product Team's change workflow](https://github.com/3orionkings/ai-product-team/blob/main/workflows/process-change.md)
-and the reviewer question raised by [Audit Without Verification](https://arxiv.org/abs/2609.07680).
+This procedure applies the reviewer question raised by
+[Audit Without Verification](https://arxiv.org/abs/2609.07680).
 It adds a review protocol around this deterministic CLI; it does not implement a
 controller that enforces the protocol automatically.
