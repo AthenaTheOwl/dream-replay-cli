@@ -61,6 +61,7 @@ dream-replay-cli/
   docs/
     METHODOLOGY.md             # rules, thresholds, calibration loop
     first-pr.md                # spec 0001 PR plan
+    evidence-bounded-dreams.md # reviewer protocol for dream candidates
 
   data/
     ledger/                    # one JSONL row per scoring run
