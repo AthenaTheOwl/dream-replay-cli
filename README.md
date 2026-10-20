@@ -88,10 +88,6 @@ args and read only the committed corpus.
 
 ## How it connects
 
-The [evidence-bounded replay protocol](docs/evidence-bounded-dreams.md) describes
-how to review a candidate against raw traces, test a counterexample, and compare
-retries and time alongside token use before promoting a memory or skill change.
-
 This is the replay plane pulled out of the CDCP operating model the rest of the
 portfolio runs on. Two ledgers feed it and nothing it produces is automatic:
 
@@ -102,6 +98,11 @@ portfolio runs on. Two ledgers feed it and nothing it produces is automatic:
   keep them. This repo never becomes the store.
 - Promotion is a person reading `dreams/YYYY-WNN/` and merging by hand. There is no
   confidence score standing in for the human, and no hosted plane doing it for you.
+
+The [evidence-bounded replay protocol](docs/evidence-bounded-dreams.md) is a
+manual review protocol: check a candidate against raw traces, test a
+counterexample, and (outside this CLI) compare retries and time alongside token
+use before promoting a candidate.
 
 ## Run / layout
 
